@@ -1,0 +1,27 @@
+Summary: Display a list of remote photos from 500px.com
+
+Focus on the first three tasks first then, if you have time, finish the remaining tasks.
+
+Other Requirements:
+1. The project is located here: "/Users/interview/AndroidStudioProjects/interview" which is a git repo.  As you work and complete features, please check in your code.
+2. After you are done with the primary features, tag the git repo with the name v1.0
+3. After you are done with each secondary feature, tag the git repo with v1.1, v1.2, etc for each new feature
+
+Primary Features:
+1. Using the following API, retrieve the JSON for a set of photos
+        https://api.500px.com/v1/photos?feature=fresh_today&sort=created_at&page=1&limit=10&image_size=4&include_store=store_download&include_states=voted&consumer_key=mSDECDmxoEEEw32OgaNxZxhUFuwiZetUaK9xTyTW
+2. Display the list of photos in a recycler view
+        Use the "image_url" key as the photo's remote location
+3. Each item in the recycler view should have a parent view that is a CardView (<android.support.v7.widget.CardView>)
+
+Secondary Features:
+4. Make the photo item clickable such that it takes you to the 500px page about the photo (launch chrome or the default browser to that url).
+        Each photo will have a key in the JSON called "url" with a value something like: "/photo/140866179/twin-shadows-by-bob-noble",
+        if you prefix "http://500px.com" to the url value it will take you to a 500px page with more information about the photo.
+5. There is a fab button in the main activity, clicking this should cause the current result to be removed and a new API call to get a fresh set of images should be initiated.
+6. Make the photo item long clickable, doing so will cause the current photo to be set as the user's homescreen background image
+7. Create at least one unit test
+
+Notes:
+Feel free to use google and any 3rd party libraries that you need and are familiar with.
+For fetching JSON, parsing JSON, and remotely loading images, also use any library that you wish.
