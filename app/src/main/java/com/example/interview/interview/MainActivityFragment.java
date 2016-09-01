@@ -35,7 +35,7 @@ import okhttp3.Response;
 public class MainActivityFragment extends Fragment {
     private static final String TAG = "MAIN_ACTIVITY_FRAGMENT";
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private PhotoAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<ImageData> mPhotos = new ArrayList<ImageData>();
 
@@ -46,7 +46,6 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        makeNetworkCall();
         return view;
     }
 
@@ -59,7 +58,8 @@ public class MainActivityFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new PhotoAdapter();
+        mAdapter = new PhotoAdapter(getActivity());
+        makeNetworkCall();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -97,6 +97,7 @@ public class MainActivityFragment extends Fragment {
                             String url = photo.getString("url");
                             mPhotos.add(new ImageData(imageUrl, url));
                         }
+                        mAdapter.setPhotos(mPhotos);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -107,9 +108,9 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    static class ImageData {
-        String image_url;
-        String url;
+    public static class ImageData {
+        public String image_url;
+        public String url;
 
         public ImageData(String image_url, String url){
             this.image_url = image_url;
