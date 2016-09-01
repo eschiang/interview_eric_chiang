@@ -66,6 +66,7 @@ public class MainActivityFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    //Makes network call
     public void makeNetworkCall() {
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.500px.com/v1/photos?feature=fresh_today&sort=created_at&page=1&limit=10&image_size=4&include_store=store_download&include_states=voted&consumer_key=mSDECDmxoEEEw32OgaNxZxhUFuwiZetUaK9xTyTW").newBuilder();
@@ -87,17 +88,21 @@ public class MainActivityFragment extends Fragment {
                     }
                     String responseData = response.body().string();
                     Log.d(TAG, responseData);
-                    JSONObject json = null;
+                    JSONObject json;
                     try {
                         json = new JSONObject(responseData);
                         JSONArray photos = json.getJSONArray("photos");
-                        for(int i = 0; i < photos.length(); i++) {
-                            JSONObject photo = photos.getJSONObject(i);
-                            String imageUrl = photo.getString("image_url");
-                            String url = photo.getString("url");
+                        JSONObject photo;
+                        String imageUrl;
+                        String url;
+                        for (int i = 0; i < photos.length(); i++) {
+                            photo = photos.getJSONObject(i);
+                            imageUrl = photo.getString("image_url");
+                            url = photo.getString("url");
                             mPhotos.add(new ImageData(imageUrl, url));
                         }
                         mAdapter.setPhotos(mPhotos);
+                        notifyAdapter();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -108,11 +113,22 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    //Notify adapter of new dataset in main thread
+    private void notifyAdapter() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    //Holds image data
     public static class ImageData {
         public String image_url;
         public String url;
 
-        public ImageData(String image_url, String url){
+        public ImageData(String image_url, String url) {
             this.image_url = image_url;
             this.url = url;
         }

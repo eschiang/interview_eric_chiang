@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
     private ArrayList<MainActivityFragment.ImageData> mPhotos = new ArrayList<MainActivityFragment.ImageData>();
     Context mContext;
+
     public PhotoAdapter(Context context) {
         mContext = context;
     }
@@ -33,7 +34,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(position < mPhotos.size()) {
+        if (position < mPhotos.size()) {
             String url = mPhotos.get(position).image_url;
             Glide.with(mContext).load(url).into(holder.mImage);
         }
@@ -56,7 +57,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         }
     }
 
-    public void setPhotos(ArrayList<MainActivityFragment.ImageData> photos){
+    public void setPhotos(ArrayList<MainActivityFragment.ImageData> photos) {
         mPhotos = photos;
     }
 }
