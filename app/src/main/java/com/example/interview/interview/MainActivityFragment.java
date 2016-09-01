@@ -12,7 +12,12 @@ import android.view.ViewGroup;
 
 import com.example.interview.interview.adapters.PhotoAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,6 +37,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<ImageData> mPhotos = new ArrayList<ImageData>();
 
     public MainActivityFragment() {
     }
@@ -60,7 +66,7 @@ public class MainActivityFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    public void makeNetworkCall(){
+    public void makeNetworkCall() {
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.500px.com/v1/photos?feature=fresh_today&sort=created_at&page=1&limit=10&image_size=4&include_store=store_download&include_states=voted&consumer_key=mSDECDmxoEEEw32OgaNxZxhUFuwiZetUaK9xTyTW").newBuilder();
         String url = urlBuilder.build().toString();
@@ -79,11 +85,35 @@ public class MainActivityFragment extends Fragment {
                     if (!response.isSuccessful()) {
                         throw new IOException("Unexpected code " + response);
                     }
-                    Log.d(TAG, response.body().toString());
+                    String responseData = response.body().string();
+                    Log.d(TAG, responseData);
+                    JSONObject json = null;
+                    try {
+                        json = new JSONObject(responseData);
+                        JSONArray photos = json.getJSONArray("photos");
+                        for(int i = 0; i < photos.length(); i++) {
+                            JSONObject photo = photos.getJSONObject(i);
+                            String imageUrl = photo.getString("image_url");
+                            String url = photo.getString("url");
+                            mPhotos.add(new ImageData(imageUrl, url));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    static class ImageData {
+        String image_url;
+        String url;
+
+        public ImageData(String image_url, String url){
+            this.image_url = image_url;
+            this.url = url;
         }
     }
 }
